@@ -28,23 +28,29 @@ module.exports = {
     // --------------------------------------------------------- Usuário comum
 
     // SELECT * FROM usuario;
-    getAllUsuario(nome){
+    getAllUsuario(){
         return knex('usuario');
     },
 
+    // SELECT * FROM usuario WHERE idusuario = "...";
+    getOneUsuario(idusuario){
+        return knex('usuario').where('idusuario', idusuario).first();
+    },
+
     // INSERT INTO atendente VALUES (..., ...);
-    createUsuario(usuario){
-        return knex('usuario').insert(usuario, '*');
+    createUsuario(idusuario, nomeusuario){
+        return knex('usuario').insert({idusuario: idusuario,
+                                       nomeusuario: nomeusuario});
     },
 
-    // UPDATE usuario SET nuspusuario = '...', nomeusuario = '...' WHERE nuspusuario = '...';
-    updateUsuario(nuspusuario, usuario){
-        return knex('usuario').where('nuspusuario', nuspusuario).update(usuario, '*');
+    // UPDATE usuario SET idusuario = '...', nomeusuario = '...' WHERE idusuario = '...';
+    updateUsuario(idusuario, usuario){
+        return knex('usuario').where('idusuario', idusuario).update(usuario, '*');
     },
 
-    //DELETE FROM usuario WHERE nuspusuario = '...';
-    deleteUsuario(nuspusuario){
-        return knex('usuario').where('nuspusuario', nuspusuario).del();
+    //DELETE FROM usuario WHERE idusuario = '...';
+    deleteUsuario(idusuario){
+        return knex('usuario').where('idusuario', idusuario).del();
     }
 
 }
