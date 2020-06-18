@@ -5,11 +5,11 @@ const router = express.Router();
 
 const queries = require('../db/queries');
 
-function validUsuario(usuario){
-    const hasNUSP = typeof usuario.nuspusuario == 'string' && usuario.nuspusuario.trim() != '';
-    const hasNome = typeof usuario.nomeusuario == 'string' && usuario.nomeusuario.trim() != '';
+function validUsuario(idusuario, nomeusuario){
+    const hasID = typeof idusuario == 'string' && idusuario.trim() != '';
+    const hasNome = typeof nomeusuario == 'string' && nomeusuario.trim() != '';
 
-    return hasNUSP && hasNome;
+    return hasID && hasNome;
 }
 
 function validAtend(usuario){
@@ -68,28 +68,36 @@ router.get('/aluno/', (req, res) => {
     })
 });
 
+router.get('/aluno/:idusuario', (req, res) => {
+    queries.getOneUsuario(req.params.idusuario).then(usuario => {
+        if(usuario) res.json(usuario);
+        else res.json({});
+    })
+});
+
 router.post('/aluno/', (req, res, next) => {
-    if(validUsuario(req.body)){
+    if(validUsuario(req.body.idusuario, req.body.nomeusuario)){
         //Insert into DB
-        queries.createUsuario(req.body).then(usuarios => {
+        queries.createUsuario(req.body.idusuario,
+                              req.body.nomeusuario).then(usuarios => {
             res.json(usuarios[0]);
         });
     }
     else next(new Error('Usuário inválido.'));
 });
 
-router.put('/aluno/:nuspusuario', (req, res, next) => {
+router.put('/aluno/:idusuario', (req, res, next) => {
     if(validUsuario(req.body)){
         //Update the quest
-        queries.updateUsuario(req.params.nuspusuario, req.body).then(usuarios => {
+        queries.updateUsuario(req.params.idusuario, req.body).then(usuarios => {
             res.json(usuarios[0]);
         });
     }
     else next(new Error('Usuário inválido. Impossível atualizar.'));
 });
 
-router.delete('/aluno/:nuspusuario', (req, res) => {
-    queries.deleteUsuario(req.params.nuspusuario).then(() => {
+router.delete('/aluno/:idusuario', (req, res) => {
+    queries.deleteUsuario(req.params.idusuario).then(() => {
         res.json({
             deleted: true
         });
