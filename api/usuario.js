@@ -76,6 +76,18 @@ router.get('/aluno/:idusuario', (req, res) => {
 });
 
 router.post('/aluno/', (req, res, next) => {
+    //Giovana, inserir esses dados abaixo na criação de um usuário
+
+    //Dados criados pelo usuário no cadastro
+    // let nusp = req.body.nusp;
+    // let instituto = req.body.instituto;
+
+    // //Dados retornados pelo oAuth
+    // let userId = req.userId; 
+    // let userName = req.userName;
+    // let userEmail = req.userEmail;
+
+    console.log(req.body);
     if(validUsuario(req.body.idusuario, req.body.nomeusuario)){
         //Insert into DB
         queries.createUsuario(req.body.idusuario,
