@@ -62,7 +62,7 @@ router.delete('/gapsi/:emailatendente', (req, res) => {
 
 // ------------------------------------------------------------------- Usuário comum
 
-router.get('/aluno/', (req, res) => {
+router.get('/aluno', (req, res) => {
     queries.getAllUsuario().then(usuario => {
         res.json(usuario);
     })
@@ -71,7 +71,7 @@ router.get('/aluno/', (req, res) => {
 router.get('/aluno/:idusuario', (req, res) => {
     queries.getOneUsuario(req.params.idusuario).then(usuario => {
         if(usuario) res.json(usuario);
-        else res.json({});
+        else res.json({error: true});
     })
 });
 
