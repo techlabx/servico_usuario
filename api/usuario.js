@@ -5,11 +5,14 @@ const router = express.Router();
 
 const queries = require('../db/queries');
 
-function validUsuario(idusuario, nomeusuario){
-    const hasID = typeof idusuario == 'string' && idusuario.trim() != '';
-    const hasNome = typeof nomeusuario == 'string' && nomeusuario.trim() != '';
-
-    return hasID && hasNome;
+function validUsuario(userId, nusp, userName, instituto, userEmail) {
+    const hasID = typeof userId == 'string' && userId.trim() != '';
+    const hasNumUsp = typeof nusp == 'string' && nusp.trim() != '';
+    const hasNome = typeof userName == 'string' && userName.trim() != '';
+    const hasInstituto = typeof instituto == 'string' && instituto.trim() != '';
+    const hasEmail = typeof userEmail == 'string' && userEmail.trim() != '';
+    
+    return hasID && hasNumUsp && hasNome && hasInstituto && hasEmail;
 }
 
 function validAtend(usuario){
@@ -26,9 +29,15 @@ function validAtend(usuario){
 // ------------------------------------------------------------------- Usuário GAPsi/Apoia
 
 router.get('/gapsi/', (req, res) => {
-    queries.getAllAtend().then(usuario => {
-        res.json(usuario);
-    })
+    try {
+        queries.getAllAtend().then(usuario => {
+            res.json(usuario);
+        });
+    }
+    catch (err) {
+        console.error(err);
+        res.status(500).send("Erro");
+    }
 });
 
 router.post('/gapsi/', (req, res, next) => {
@@ -63,9 +72,15 @@ router.delete('/gapsi/:emailatendente', (req, res) => {
 // ------------------------------------------------------------------- Usuário comum
 
 router.get('/aluno', (req, res) => {
-    queries.getAllUsuario().then(usuario => {
-        res.json(usuario);
-    })
+    try {
+            queries.getAllUsuario().then(usuario => {
+            res.json(usuario);
+        });
+    }
+    catch (err) {
+        console.error(err);
+        res.status(500).send("Error");
+    }
 });
 
 router.get('/aluno/:idusuario', (req, res) => {
@@ -75,23 +90,21 @@ router.get('/aluno/:idusuario', (req, res) => {
     })
 });
 
-router.post('/aluno/', (req, res, next) => {
+router.post('/aluno', (req, res, next) => {
     //Giovana, inserir esses dados abaixo na criação de um usuário
 
-    //Dados criados pelo usuário no cadastro
-    // let nusp = req.body.nusp;
-    // let instituto = req.body.instituto;
+    let usuario = {
+        userId: req.userId,
+        nusp: req.body.nusp,
+        userName: req.userName,
+        instituto: req.body.instituto,
+        email: req.userEmail
+    }
 
-    // //Dados retornados pelo oAuth
-    // let userId = req.userId; 
-    // let userName = req.userName;
-    // let userEmail = req.userEmail;
-
-    console.log(req.body);
-    if(validUsuario(req.body.idusuario, req.body.nomeusuario)){
+    console.log(usuario);
+    if(validUsuario(usuario.userId, usuario.nusp, usuario.userName, usuario.instituto, usuario.email)){
         //Insert into DB
-        queries.createUsuario(req.body.idusuario,
-                              req.body.nomeusuario).then(usuarios => {
+        queries.createUsuario(usuario.userId, usuario.nusp, usuario.userName, usuario.instituto, usuario.email).then(usuarios => {
             res.json(usuarios[0]);
         });
     }
@@ -99,9 +112,18 @@ router.post('/aluno/', (req, res, next) => {
 });
 
 router.put('/aluno/:idusuario', (req, res, next) => {
-    if(validUsuario(req.body)){
+    
+    let usuario = {
+        idusuario: req.userId,
+        nuspusuario: req.body.nusp,
+        nomeusuario: req.userName,
+        institutousuario: req.body.instituto,
+        emailusuario: req.userEmail
+    }
+
+    if(validUsuario(usuario.idusuario, usuario.nuspusuario, usuario.nomeusuario, usuario.institutousuario, usuario.emailusuario)){
         //Update the quest
-        queries.updateUsuario(req.params.idusuario, req.body).then(usuarios => {
+        queries.updateUsuario(req.params.idusuario, usuario).then(usuarios => {
             res.json(usuarios[0]);
         });
     }

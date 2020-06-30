@@ -38,9 +38,16 @@ module.exports = {
     },
 
     // INSERT INTO atendente VALUES (..., ...);
-    createUsuario(idusuario, nomeusuario){
-        return knex('usuario').insert({idusuario: idusuario,
-                                       nomeusuario: nomeusuario});
+    createUsuario(idusuario, nusp, nomeusuario, institutousuario, email){
+        return knex('usuario').insert(
+            {
+                idusuario: idusuario,
+                nuspusuario: nusp,
+                nomeusuario: nomeusuario,
+                institutousuario: institutousuario,
+                emailusuario: email 
+            }
+        );
     },
 
     // UPDATE usuario SET idusuario = '...', nomeusuario = '...' WHERE idusuario = '...';
