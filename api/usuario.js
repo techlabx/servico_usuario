@@ -90,18 +90,17 @@ router.get('/aluno/:idusuario', (req, res) => {
     })
 });
 
-router.post('/aluno', (req, res, next) => {
+router.post('/aluno', async (req, res, next) => {
     //Giovana, inserir esses dados abaixo na criação de um usuário
 
     let usuario = {
-        userId: req.userId,
+        userId: req.body.userId,
         nusp: req.body.nusp,
-        userName: req.userName,
+        userName: req.body.userName,
         instituto: req.body.instituto,
-        email: req.userEmail
+        email: req.body.userEmail
     }
 
-    console.log(usuario);
     if(validUsuario(usuario.userId, usuario.nusp, usuario.userName, usuario.instituto, usuario.email)){
         //Insert into DB
         queries.createUsuario(usuario.userId, usuario.nusp, usuario.userName, usuario.instituto, usuario.email).then(usuarios => {
@@ -114,12 +113,14 @@ router.post('/aluno', (req, res, next) => {
 router.put('/aluno/:idusuario', (req, res, next) => {
     
     let usuario = {
-        idusuario: req.userId,
+        idusuario: req.body.userId,
         nuspusuario: req.body.nusp,
-        nomeusuario: req.userName,
+        nomeusuario: req.body.userName,
         institutousuario: req.body.instituto,
-        emailusuario: req.userEmail
+        emailusuario: req.body.userEmail
     }
+
+    console.log(usuario);
 
     if(validUsuario(usuario.idusuario, usuario.nuspusuario, usuario.nomeusuario, usuario.institutousuario, usuario.emailusuario)){
         //Update the quest
