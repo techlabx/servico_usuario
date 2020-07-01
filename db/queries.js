@@ -5,41 +5,41 @@ module.exports = {
     // --------------------------------------------------------- Usuário GAPsi/Apoia
 
     // SELECT * FROM atendente;
-    getAllAtend(){
-        return knex('atendente');
+    async getAllAtend(){
+        return await knex('atendente');
     },
 
     // INSERT INTO atendente VALUES (..., ...);
-    createAtend(usuario){
-        return knex('atendente').insert(usuario, '*');
+    async createAtend(usuario){
+        return await knex('atendente').insert(usuario, '*');
     },
 
     // UPDATE atendente SET nomeatendente = '...', emailatendente = '...' WHERE emailatendente = '...';
-    updateAtend(emailatendente, usuario){
-        return knex('atendente').where('emailatendente', emailatendente).update(usuario, '*');
+    async updateAtend(emailatendente, usuario){
+        return await knex('atendente').where('emailatendente', emailatendente).update(usuario, '*');
     },
 
     //DELETE FROM atendente WHERE emailatendente = '...';
-    deleteAtend(emailatendente){
-        return knex('atendente').where('emailatendente', emailatendente).del();
+    async deleteAtend(emailatendente){
+        return await knex('atendente').where('emailatendente', emailatendente).del();
     },
 
 
     // --------------------------------------------------------- Usuário comum
 
     // SELECT * FROM usuario;
-    getAllUsuario(){
-        return knex('usuario');
+    async getAllUsuario(){
+        return await knex('usuario');
     },
 
     // SELECT * FROM usuario WHERE idusuario = "...";
-    getOneUsuario(idusuario){
-        return knex('usuario').where('idusuario', idusuario).first();
+    async getOneUsuario(idusuario){
+        return await knex('usuario').where('idusuario', idusuario).first();
     },
 
     // INSERT INTO atendente VALUES (..., ...);
-    createUsuario(idusuario, nusp, nomeusuario, institutousuario, email){
-        return knex('usuario').insert(
+    async createUsuario(idusuario, nusp, nomeusuario, institutousuario, email){
+        return await knex('usuario').insert(
             {
                 idusuario: idusuario,
                 nuspusuario: nusp,
@@ -51,13 +51,13 @@ module.exports = {
     },
 
     // UPDATE usuario SET idusuario = '...', nomeusuario = '...' WHERE idusuario = '...';
-    updateUsuario(idusuario, usuario){
-        return knex('usuario').where('idusuario', idusuario).update(usuario, '*');
+    async updateUsuario(idusuario, usuario){
+        return await knex('usuario').where('idusuario', idusuario).update(usuario, '*');
     },
 
     //DELETE FROM usuario WHERE idusuario = '...';
-    deleteUsuario(idusuario){
-        return knex('usuario').where('idusuario', idusuario).del();
+    async deleteUsuario(idusuario){
+        return await knex('usuario').where('idusuario', idusuario).del();
     }
 
 }
