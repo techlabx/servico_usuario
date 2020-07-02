@@ -11,16 +11,17 @@ function validUsuario(userId, nusp, userName, instituto, userEmail) {
     const hasNome = typeof userName == 'string' && userName.trim() != '';
     const hasInstituto = typeof instituto == 'string' && instituto.trim() != '';
     const hasEmail = typeof userEmail == 'string' && userEmail.trim() != '';
-    
+
     return hasID && hasNumUsp && hasNome && hasInstituto && hasEmail;
 }
 
 function validAtend(usuario){
     const hasName = typeof usuario.nomeatendente == 'string' && usuario.nomeatendente.trim() != '';
     const hasEmail = typeof usuario.emailatendente == 'string' && usuario.emailatendente.trim() != '';
-    const hasLink = typeof usuario.linkagenda == 'string' && usuario.linkagenda.trim() != '';
+    const hasInstituto = typeof usuario.institutoatendente == 'string' && usuario.institutoatendente.trim() != '';
+    const hasStatus = typeof usuario.statusatendente == 'string' && usuario.statusatendente.trim() != '';
 
-    return hasName && hasEmail && hasLink;
+    return hasName && hasEmail && hasInstituto && hasStatus;
 }
 
 
@@ -51,6 +52,18 @@ router.post('/gapsi', async (req, res, next) => {
     catch (err) {
         console.error(err);
         res.status(500).send("Erro");
+    }
+});
+
+router.get('/gapsi/:instituto', async (req, res) => {
+    try {
+        let usuario = await queries.getAtendenteInst(req.params.instituto)
+        if(usuario) res.json(usuario);
+        else res.status(404).send("Not found");
+    }
+    catch (err) {
+        console.error(err);
+        res.status(500).send("Error");
     }
 });
 
@@ -102,18 +115,18 @@ router.get('/aluno/:idusuario', async (req, res) => {
 
 router.post('/aluno', async (req, res, next) => {
     try {
-        //Giovana, inserir esses dados abaixo na criação de um usuário
         let usuario = {
             userId: req.body.userId,
             nusp: req.body.nusp,
             userName: req.body.userName,
             instituto: req.body.instituto,
-            email: req.body.userEmail
+            email: req.body.userEmail,
+            nivelAcesso: req.body.nivelAcesso
         }
 
         if(validUsuario(usuario.userId, usuario.nusp, usuario.userName, usuario.instituto, usuario.email)){
             //Insert into DB
-            let usuarios = await queries.createUsuario(usuario.userId, usuario.nusp, usuario.userName, usuario.instituto, usuario.email);
+            let usuarios = await queries.createUsuario(usuario.userId, usuario.nusp, usuario.userName, usuario.instituto, usuario.email, usuario.nivelAcesso);
             res.status(200).send(usuarios[0]);
         }
         else next(new Error('Usuário inválido.'));
@@ -127,18 +140,17 @@ router.post('/aluno', async (req, res, next) => {
 router.put('/aluno/:idusuario', async (req, res, next) => {
     try {
         let usuario = {
-            idusuario: req.body.userId,
-            nuspusuario: req.body.nusp,
-            nomeusuario: req.body.userName,
-            institutousuario: req.body.instituto,
-            emailusuario: req.body.userEmail
+            userId: req.body.userId,
+            nusp: req.body.nusp,
+            userName: req.body.userName,
+            instituto: req.body.instituto,
+            email: req.body.userEmail,
+            nivelAcesso: req.body.nivelAcesso
         }
 
-        console.log(usuario);
-
-        if(validUsuario(usuario.idusuario, usuario.nuspusuario, usuario.nomeusuario, usuario.institutousuario, usuario.emailusuario)){
+        if(validUsuario(usuario.userId, usuario.nusp, usuario.userName, usuario.instituto, usuario.email)){
             //Update the quest
-            let usuarios = await queries.updateUsuario(req.params.idusuario, usuario);
+            let usuarios = await queries.updateUsuario(usuario.userId, usuario.nusp, usuario.userName, usuario.instituto, usuario.email, usuario.nivelAcesso);
             res.status(200).send(usuarios[0]);
         }
         else next(new Error('Usuário inválido. Impossível atualizar.'));
