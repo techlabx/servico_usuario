@@ -6,6 +6,11 @@ async function getAllAtend(){
     return await knex('atendente');
 }
 
+// SELECT * FROM atendente WHERE instituto = "...";
+async function getAtendenteInst(instituto){
+    return await knex('atendente').where('institutoatendente', instituto).first();
+}
+
 // INSERT INTO atendente VALUES (..., ...);
 async function createAtend(usuario){
     return await knex('atendente').insert(usuario, '*');
@@ -35,21 +40,31 @@ async function getOneUsuario(idusuario){
 }
 
 // INSERT INTO atendente VALUES (..., ...);
-async function createUsuario(idusuario, nusp, nomeusuario, institutousuario, email){
+async function createUsuario(idusuario, nusp, nomeusuario, institutousuario, email, nivelacesso){
     return await knex('usuario').insert(
         {
             idusuario: idusuario,
             nuspusuario: nusp,
             nomeusuario: nomeusuario,
             institutousuario: institutousuario,
-            emailusuario: email 
+            emailusuario: email,
+            nivelacesso: nivelacesso
         }
     );
 }
 
 // UPDATE usuario SET idusuario = '...', nomeusuario = '...' WHERE idusuario = '...';
-async function updateUsuario(idusuario, usuario){
-    return await knex('usuario').where('idusuario', idusuario).update(usuario, '*');
+async function updateUsuario(idusuario, nusp, nomeusuario, institutousuario, email, nivelacesso){
+    return await knex('usuario').where('idusuario', idusuario).update(
+        {
+            idusuario: idusuario,
+            nuspusuario: nusp,
+            nomeusuario: nomeusuario,
+            institutousuario: institutousuario,
+            emailusuario: email,
+            nivelacesso: nivelacesso
+        }
+    );
 }
 
 //DELETE FROM usuario WHERE idusuario = '...';
@@ -63,6 +78,7 @@ module.exports  = {
     updateAtend,
     deleteAtend,
     getAllUsuario,
+    getAtendenteInst,
     getOneUsuario,
     createUsuario,
     updateUsuario,
