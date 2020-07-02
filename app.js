@@ -23,6 +23,6 @@ app.use(cors(corsOptions));
 app.use(cookieParser());
 
 //Mounting the route
-app.use('/', usuario);
+app.use('/usuarios', usuario);
 
 module.exports = app;
