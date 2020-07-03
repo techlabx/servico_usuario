@@ -8,7 +8,7 @@ async function getAllAtend(){
 
 // SELECT * FROM atendente WHERE instituto = "...";
 async function getAtendenteInst(instituto){
-    return await knex('atendente').where('institutoatendente', instituto);
+    return await knex('atendente').where('institutoatendente', instituto).first();
 }
 
 // INSERT INTO atendente VALUES (..., ...);
