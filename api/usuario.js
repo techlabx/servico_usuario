@@ -45,15 +45,13 @@ router.post('/gapsi', async (req, res, next) => {
     try {
         if(validAtend(req.body)){
     
-            let atendenteExiste = await queries.getAtendenteInst(req.body.institutoatendente);
-            let tokenExiste = await queries.getTokenInfo(req.body.institutoatendente);
-            console.log(atendenteExiste[0]);
-            console.log(tokenExiste[0]);
+            let atendenteExiste = !(await queries.getAtendenteInst(req.body.institutoatendente)) === undefined;
+            let tokenExiste = !(await queries.getTokenInfo(req.body.institutoatendente)) === undefined;
 
-            if (atendenteExiste[0]) {
+            if (atendenteExiste) {
                 res.status(500).send("Usuário já existe");
             }
-            else if (tokenExiste[0]) {
+            else if (tokenExiste) {
                 res.status(500).send("Token já existe");
             }
             else {
