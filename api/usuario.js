@@ -20,8 +20,9 @@ function validAtend(usuario){
     const hasEmail = typeof usuario.emailatendente == 'string' && usuario.emailatendente.trim() != '';
     const hasInstituto = typeof usuario.institutoatendente == 'string' && usuario.institutoatendente.trim() != '';
     const hasStatus = typeof usuario.statusatendente == 'string' && usuario.statusatendente.trim() != '';
-
-    return hasName && hasEmail && hasInstituto && hasStatus;
+    const hasAgenda = typeof usuario.linkagenda == 'string' && usuario.linkagenda != '';
+    
+    return hasName && hasEmail && hasInstituto && hasStatus && hasAgenda;
 }
 
 
@@ -43,9 +44,42 @@ router.get('/gapsi', async (req, res) => {
 router.post('/gapsi', async (req, res, next) => {
     try {
         if(validAtend(req.body)){
-            //Insert into DB
-            let result = await queries.createAtend(req.body);
-            res.status(201).send(result[0]);
+    
+            let atendenteExiste = await queries.getAtendenteInst(req.body.institutoatendente);
+            let tokenExiste = await queries.getTokenInfo(req.body.institutoatendente);
+            console.log(atendenteExiste[0]);
+            console.log(tokenExiste[0]);
+
+            if (atendenteExiste[0]) {
+                res.status(500).send("Usuário já existe");
+            }
+            else if (tokenExiste[0]) {
+                res.status(500).send("Token já existe");
+            }
+            else {
+                let atendente = {
+                    nomeatendente: req.body.nomeatendente,
+                    emailatendente: req.body.emailatendente,
+                    institutoatendente: req.body.institutoatendente,
+                    imgatendente: null,
+                    statusatendente: "WAITING"
+                }
+                let init = req.body.linkagenda.indexOf("br_");
+                let end = req.body.linkagenda.indexOf("%40");
+                let idagenda = req.body.linkagenda.substring(init+3, end);
+                let token = {
+                    access_token: null,
+                    refresh_token: null,
+                    scope: null,
+                    token_type: null,
+                    expiry_date: null,
+                    institutotoken: req.body.institutoatendente,
+                    linkagenda: idagenda,
+                }
+                await queries.createAtend(atendente);
+                await queries.createTokenInfo(token);
+                res.status(201).send("Created");
+            }
         }
         else next(new Error('Atendente GAPSI/Apoia inválido.'));
     }
@@ -67,18 +101,26 @@ router.get('/gapsi/:instituto', async (req, res) => {
     }
 });
 
-router.put('/gapsi/:emailatendente', async (req, res, next) => {
+router.put('/gapsi/:institutoatendente', async (req, res, next) => {
     if(validAtend(req.body)){
-        //Update the quest
-        let usuario = await queries.updateAtend(req.params.emailatendente, req.body)[0];
+        let oldatendente = queries.getAtendenteInst(req.params.institutoatendente);
+        let atendente = {
+            nomeatendente: req.body.nomeatendente,
+            emailatendente: req.body.emailatendente,
+            institutoatendente: req.body.institutoatendente,
+            imgatendente: oldatendente.imgatendente,
+            statusatendente: oldatendente.statusagenda
+        }
+        let usuario = await queries.updateAtend(req.params.institutoatendente, atendente)[0];
         res.status(200).send(usuario)
     }
     else next(new Error('Atendente GAPSI/Apoia inválido. Impossível atualizar.'));
 });
 
-router.delete('/gapsi/:emailatendente', async (req, res) => {
+router.delete('/gapsi/:institutoatendente', async (req, res) => {
     try {
-        await queries.deleteAtend(req.params.emailatendente);
+        await queries.deleteTokenInfo(req.params.institutoatendente);
+        await queries.deleteAtend(req.params.institutoatendente);
         res.status(200).send({deleted: true});
     }
     catch (err) {

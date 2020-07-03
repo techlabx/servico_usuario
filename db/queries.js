@@ -8,7 +8,7 @@ async function getAllAtend(){
 
 // SELECT * FROM atendente WHERE instituto = "...";
 async function getAtendenteInst(instituto){
-    return await knex('atendente').where('institutoatendente', instituto).first();
+    return await knex('atendente').where('institutoatendente', instituto);
 }
 
 // INSERT INTO atendente VALUES (..., ...);
@@ -16,14 +16,14 @@ async function createAtend(usuario){
     return await knex('atendente').insert(usuario, '*');
 }
 
-// UPDATE atendente SET nomeatendente = '...', emailatendente = '...' WHERE emailatendente = '...';
-async function updateAtend(emailatendente, usuario){
-    return await knex('atendente').where('emailatendente', emailatendente).update(usuario, '*');
+// UPDATE atendente SET nomeatendente = '...', emailatendente = '...' WHERE institutoatendente = '...';
+async function updateAtend(instituto, usuario){
+    return await knex('atendente').where('institutoatendente', instituto).update(usuario, '*');
 }
 
-//DELETE FROM atendente WHERE emailatendente = '...';
-async function deleteAtend(emailatendente){
-    return await knex('atendente').where('emailatendente', emailatendente).del();
+//DELETE FROM atendente WHERE institutoAtendente = '...';
+async function deleteAtend(instituto){
+    return await knex('atendente').where('institutoatendente', instituto).del();
 }
 
 
@@ -72,6 +72,23 @@ async function deleteUsuario(idusuario){
     return await knex('usuario').where('idusuario', idusuario).del();
 }
 
+// --------------------------------------------------------- Token
+async function createTokenInfo(tokenInfo) {
+    return await knex('token').insert(tokenInfo, '*');
+}
+
+async function getTokenInfo(instituto) {
+    return await knex('token').where('institutotoken', instituto); 
+}
+
+async function updateTokenInfo(instituto, tokenInfo) {
+    return await knex('token').where('institutotoken', instituto).update(tokenInfo, '*');
+}
+
+async function deleteTokenInfo(instituto) {
+    return await knex('token').where('institutotoken', instituto).del();
+}
+
 module.exports  = {
     getAllAtend,
     createAtend,
@@ -82,5 +99,9 @@ module.exports  = {
     getOneUsuario,
     createUsuario,
     updateUsuario,
-    deleteUsuario
+    deleteUsuario,
+    createTokenInfo,
+    getTokenInfo,
+    updateTokenInfo,
+    deleteTokenInfo
 }
