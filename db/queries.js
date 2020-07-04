@@ -78,7 +78,7 @@ async function createTokenInfo(tokenInfo) {
 }
 
 async function getTokenInfo(instituto) {
-    return await knex('token').where('institutotoken', instituto); 
+    return await knex('token').where('institutotoken', instituto);
 }
 
 async function updateTokenInfo(instituto, tokenInfo) {
@@ -88,6 +88,13 @@ async function updateTokenInfo(instituto, tokenInfo) {
 async function deleteTokenInfo(instituto) {
     return await knex('token').where('institutotoken', instituto).del();
 }
+
+// --------------------------------------------------------- Token
+// SELECT * FROM instituto;
+async function getAllInstituto(){
+    return await knex('instituto');
+}
+
 
 module.exports  = {
     getAllAtend,
@@ -100,6 +107,7 @@ module.exports  = {
     createUsuario,
     updateUsuario,
     deleteUsuario,
+    getAllInstituto,
     createTokenInfo,
     getTokenInfo,
     updateTokenInfo,
