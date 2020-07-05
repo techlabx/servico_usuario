@@ -43,7 +43,7 @@ router.get('/gapsi', async (req, res) => {
 router.post('/gapsi', async (req, res, next) => {
     try {
         if(validAtend(req.body)){
-    
+
             let atendenteExiste = !(await queries.getAtendenteInst(req.body.institutoatendente)) === undefined;
             let tokenExiste = !(await queries.getTokenInfo(req.body.institutoatendente)) === undefined;
 
@@ -208,6 +208,20 @@ router.delete('/aluno/:idusuario', async (req, res) => {
     catch (err) {
         console.error(err);
         res.status(500).send("error");
+    }
+});
+
+
+// ------------------------------------------------------------------- Institutos
+
+router.get('/instituto', async (req, res) => {
+    try {
+            let instituto = await queries.getAllInstituto();
+            res.status(200).send(instituto);
+    }
+    catch (err) {
+        console.error(err);
+        res.status(500).send("Error");
     }
 });
 
