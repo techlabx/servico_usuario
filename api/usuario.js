@@ -19,10 +19,9 @@ function validAtend(usuario){
     const hasName = typeof usuario.nomeatendente == 'string' && usuario.nomeatendente.trim() != '';
     const hasEmail = typeof usuario.emailatendente == 'string' && usuario.emailatendente.trim() != '';
     const hasInstituto = typeof usuario.institutoatendente == 'string' && usuario.institutoatendente.trim() != '';
-    const hasStatus = typeof usuario.statusatendente == 'string' && usuario.statusatendente.trim() != '';
     const hasAgenda = typeof usuario.linkagenda == 'string' && usuario.linkagenda != '';
     
-    return hasName && hasEmail && hasInstituto && hasStatus && hasAgenda;
+    return hasName && hasEmail && hasInstituto && hasAgenda;
 }
 
 
