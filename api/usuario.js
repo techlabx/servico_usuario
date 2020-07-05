@@ -1,4 +1,5 @@
 const express = require('express');
+const axios = require('axios');
 
 //Simple router
 const router = express.Router();
@@ -75,7 +76,9 @@ router.post('/gapsi', async (req, res, next) => {
                 }
                 await queries.createAtend(atendente);
                 await queries.createTokenInfo(token);
-                res.status(201).send("Created");
+                let authInfo = await axios.post(`http://servico_agendamento:8080/acolhimento/token/${req.body.institutoatendente}`);
+                console.log(authInfo);
+                res.status(201).send(authInfo.data);
             }
         }
         else next(new Error('Atendente GAPSI/Apoia inválido.'));
