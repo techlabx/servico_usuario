@@ -102,6 +102,7 @@ router.get('/gapsi/:instituto', async (req, res) => {
 });
 
 router.put('/gapsi/:institutoatendente', async (req, res, next) => {
+    req.body.linkagenda = "atualizacao"
     if(validAtend(req.body)){
         let oldatendente = queries.getAtendenteInst(req.params.institutoatendente);
         let atendente = {
